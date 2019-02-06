@@ -21,10 +21,24 @@ app.use(express.static(path.join(__dirname, 'views')))
 
 app.get('/', (req, res) => res.render("index"));
 
+app.get('/dashboard', (req, res) => {
+    console.log("hi");
+    res.render("dashboard");
+});
+
+app.get('/checkuptodate/:username', (req, res) => {
+    let username = req.params.username;
+    check(req.params.username).exists();
+    var errors = req.validationErrors();
+    if (errors) {
+        return res.status(422).json({ errors: errors });
+    }
+});
+
 app.post('/login', (req, res) => {
     let username = req.body.username;
     let password = req.body.password;
-console.log("readched here1");
+    console.log("readched here1");
     req.checkBody('username', 'Username is required').notEmpty();
     req.checkBody('password', 'Password is required').notEmpty();
 
@@ -53,12 +67,6 @@ console.log("readched here1");
         });
     }
 });
-
-app.get('/dashboard', (req, res) => {
-    console.log("hi");
-    res.render("dashboard");
-});
-
 
 app.listen(PORT, function() {
     console.log(`listening on port ${PORT}`);
